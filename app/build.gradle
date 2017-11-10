@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
 
-def ENABLE_JAVA_ACTIVITY = true;
+def ENABLE_JAVA_ACTIVITY = false;
 def ENABLE_NATIVE_ACTIVITY = !ENABLE_JAVA_ACTIVITY;
 
 Properties properties = new Properties()

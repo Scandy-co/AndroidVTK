@@ -18,29 +18,23 @@
 #include <jni.h>
 #include <errno.h>
 
-#include "vtkNew.h"
 
-#include "vtkActor.h"
-#include "vtkCamera.h"
-#include "vtkConeSource.h"
-#include "vtkDebugLeaks.h"
-#include "vtkGlyph3D.h"
-#include "vtkPolyData.h"
-#include "vtkPolyDataMapper.h"
-#include "vtkRenderWindow.h"
-#include "vtkRenderer.h"
-#include "vtkSphereSource.h"
-#include "vtkTextActor.h"
-#include "vtkTextProperty.h"
+#include <vtkAndroidRenderWindowInteractor.h>
+#include <vtkRenderWindow.h>
+#include <vtkOpenGLRenderWindow.h>
+#include <vtkRenderer.h>
 
-#include "vtkAndroidRenderWindowInteractor.h"
+#include <vtkOpenGLTexture.h>
+#include <vtkTextureObject.h>
+
+#include <vtkActor.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkPlaneSource.h>
 
 #include <vtkSmartPointer.h>
-#include <vtkOpenGLTexture.h>
-#include <vtkTexture.h>
-#include <vtkTextureObject.h>
-#include <vtkOpenGLRenderWindow.h>
-#include <vtkPlaneSource.h>
+#include <vtkNew.h>
+
+#include <vtk_glew.h>
 
 #include <vtk_glew.h>
 
@@ -78,9 +72,6 @@ void android_main(struct android_app* state)
 
   // Make sure we've got a OpenGL render window
   vtkOpenGLRenderWindow* renWinGL= vtkOpenGLRenderWindow::SafeDownCast(renderer->GetRenderWindow());
-//  if( renWinGL == nullptr || !renWinGL->SupportsOpenGL() ){
-//    return;
-//  }
   renWin->Render();
   renWinGL->GetTextureUnitManager();
 
@@ -128,18 +119,6 @@ void android_main(struct android_app* state)
     allocated = m_to->Allocate2D(width, height, bytesPerPixel, VTK_UNSIGNED_CHAR);
   }
 
-//  m_gl_texture = vtkSmartPointer<vtkTexture>::New();
-//  m_gl_texture->SetInputData(img_data);
-  // m_gl_texture->DebugOn();
-
-  /*
-  m_gl_texture->RepeatOff();
-  m_gl_texture->SetEdgeClamp(1);
-  m_gl_texture->SetQuality(VTK_TEXTURE_QUALITY_16BIT);
-  m_gl_texture->SetInterpolate(1);
-
-  m_gl_texture->SetTextureType(GL_TEXTURE_2D);
-   */
   m_gl_texture->SetTextureObject(m_to);
 
   // Create a plane
@@ -153,56 +132,13 @@ void android_main(struct android_app* state)
   vtkSmartPointer<vtkActor> texturedPlane = vtkSmartPointer<vtkActor>::New();
   texturedPlane->SetMapper(planeMapper);
   texturedPlane->SetTexture(m_gl_texture);
-//  texturedPlane->SetForceOpaque(1);
 
   // Visualize the textured plane
   renderer->AddActor(texturedPlane);
 
   renderer->ResetCamera();
-//
-//   renderer->SetTexturedBackground(true);
-//   renderer->SetBackgroundTexture(m_gl_texture);
 
   renderer->DrawOn();
-
-  /*
-
-  vtkNew<vtkSphereSource> sphere;
-  sphere->SetThetaResolution(8);
-  sphere->SetPhiResolution(8);
-
-  vtkNew<vtkPolyDataMapper> sphereMapper;
-  sphereMapper->SetInputConnection(sphere->GetOutputPort());
-  vtkNew<vtkActor> sphereActor;
-  sphereActor->SetMapper(sphereMapper.Get());
-
-  vtkNew<vtkConeSource> cone;
-  cone->SetResolution(6);
-
-  vtkNew<vtkGlyph3D> glyph;
-  glyph->SetInputConnection(sphere->GetOutputPort());
-  glyph->SetSourceConnection(cone->GetOutputPort());
-  glyph->SetVectorModeToUseNormal();
-  glyph->SetScaleModeToScaleByVector();
-  glyph->SetScaleFactor(0.25);
-
-  vtkNew<vtkPolyDataMapper> spikeMapper;
-  spikeMapper->SetInputConnection(glyph->GetOutputPort());
-
-  vtkNew<vtkActor> spikeActor;
-  spikeActor->SetMapper(spikeMapper.Get());
-
-  renderer->AddActor(sphereActor.Get());
-  renderer->AddActor(spikeActor.Get());
-  renderer->SetBackground(0.4,0.5,0.6);
-
-  vtkNew<vtkTextActor> ta;
-  ta->SetInput("Droids Rock");
-  ta->GetTextProperty()->SetColor( 0.5, 1.0, 0.0 );
-  ta->SetDisplayPosition(50,50);
-  ta->GetTextProperty()->SetFontSize(32);
-  renderer->AddActor(ta.Get());
-  */
 
   renWin->Render();
   iren->Start();

@@ -209,7 +209,7 @@ JNIEXPORT void JNICALL Java_co_scandy_nativevtk_NativeLib_onMotionEvent(JNIEnv *
   env->ReleaseIntArrayElements(ids, idJPtr, 0);
   env->ReleaseFloatArrayElements(xPos, xJPtr, 0);
   env->ReleaseFloatArrayElements(yPos, yJPtr, 0);
-  
+
   if( vtkView != nullptr ){
     vtkView->m_interactor->HandleMotionEvent(action, eventPointer, numPtrs, xPtr, yPtr, idPtr, metaState);
   }
